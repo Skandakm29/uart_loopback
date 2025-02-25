@@ -194,5 +194,3 @@ This module **implements a UART transmitter** and **RGB LED controller** using:
 - **Changes LED color based on UART activity**.
 
 ---
-
-
