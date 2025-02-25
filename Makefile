@@ -30,3 +30,4 @@ cycle:
 	git pull
 	make
 	sudo make flash
+	
