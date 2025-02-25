@@ -6,7 +6,7 @@ This module enables **serial communication via UART** and **controls RGB LEDs ba
 
 ---
 
-## ** Port Analysis**
+## **Port Analysis**
 The first section of the code specifies the **ports** of the FPGA board.
 
 | **Port Name**   | **Type**  | **Width** | **Description** |
@@ -25,7 +25,7 @@ The module consists of **three main internal components**:
 
 ---
 
-### **1\ufe0f\u20e3 Internal Oscillator (`SB_HFOSC`)**
+### **Internal Oscillator (`SB_HFOSC`)**
 ```verilog
 SB_HFOSC #(.CLKHF_DIV ("0b10")) u_SB_HFOSC (
     .CLKHFPU(1'b1),
@@ -42,7 +42,7 @@ SB_HFOSC #(.CLKHF_DIV ("0b10")) u_SB_HFOSC (
 
 ---
 
-### **2\ufe0f\u20e3 Frequency Counter Logic**
+### **Frequency Counter Logic**
 ```verilog
 reg [27:0] frequency_counter_i;
 
@@ -119,6 +119,40 @@ always @(posedge clk) begin
 end
 ```
 ---
+## UART TX 8N1 Explanation
+
+### IDLE STATE (`STATE_IDLE`)
+- If `senddata = 1` and the state is `STATE_IDLE`, it:
+  - Moves to the **`STATE_STARTTX`** state.
+  - Loads `txbyte` (**8-bit data to transmit**) into `buf_tx`.
+  - Clears `txdone` (**indicates transmission is ongoing**).
+
+- Otherwise, if still in `STATE_IDLE`, it:
+  - Keeps `txbit` **high (`1`)** because **UART idles at high**.
+  - Ensures `txdone` remains **low (`0`)**.
+
+### Start Bit Transmission (`STATE_STARTTX`)
+- Once in **`STATE_STARTTX`**, it:
+  - Sets `txbit` **low (`0`)** (**start bit** in UART communication).
+  - Moves to **`STATE_TXING`** to transmit data bits.
+
+### Sending Data Bits (`STATE_TXING`)
+- If `state == STATE_TXING` and `bits_sent < 8`, it:
+  - Sends the **Least Significant Bit (LSB) of `buf_tx`**.
+  - Shifts `buf_tx` right (`>> 1`).
+  - Increments `bits_sent`.
+
+###  Stop Bit Transmission (`STATE_TXDONE`)
+- After **8 data bits** are transmitted, it:
+  - Sends the **stop bit (`1`)**.
+  - Resets `bits_sent` to `0`.
+  - Moves to **`STATE_TXDONE`**.
+
+###  Transmission Complete (`STATE_TXDONE → STATE_IDLE`)
+- In **`STATE_TXDONE`**, it:
+  - Sets `txdone = 1` (**indicates transmission complete**).
+  - Returns to **`STATE_IDLE`**.
+
 
 ## **RGB LED Driver (`SB_RGBA_DRV`)**
 ```verilog
@@ -150,7 +184,7 @@ This module **implements a UART transmitter** and **RGB LED controller** using:
 3. **Shift Register (`buf_tx`)** for serial transmission.
 4. **Counter Logic (`frequency_counter_i`)** for timing.
 
-### ** UART TX Working**
+### **UART TX Working**
 - Transmits **8-bit data (LSB first)**.
 - Uses **start (0) and stop (1) bits**.
 - Sends **serial data on `uarttx` pin**.
