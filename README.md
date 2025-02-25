@@ -1,4 +1,4 @@
 # VsdSquadron_mini_fpga_uart_loopback
 ## Task 2 Uart loop back 
 **Contents:**
-1. [Step 1: Understanding the Verilog code](/home/skanda/Desktop/Mini fpga task 2/Step1.md)
+1. [Step 1: Understanding the Verilog code](https://github.com/Skandakm29/VsdSquadron_mini_fpga_uart_loopback/blob/main/Step1.md)
