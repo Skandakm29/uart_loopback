@@ -20,7 +20,7 @@ The first section of the code specifies the **ports** of the FPGA board.
 
 ---
 
-## **\ud83d\udccc Internal Component Analysis**
+## **Internal Component Analysis**
 The module consists of **three main internal components**:
 
 ---
