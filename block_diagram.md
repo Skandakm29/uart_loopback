@@ -11,10 +11,7 @@
  **No External Hardware Required** → TX is internally connected to RX.  
  **Self-Testing** → Helps verify UART functionality in an FPGA or microcontroller.
 
-## **Overview**
-The diagram below illustrates the **UART Loopback mechanism**, where the **UART Transmitter (TX)** is directly connected to the **UART Receiver (RX)** through a **Direct Connection**.
-
-## **Block Diagram**
+## **3. UART Loopback Block Diagram**
 ![UART Loopback](https://github.com/Skandakm29/VsdSquadron_mini_fpga_uart_loopback/blob/main/uartloopback.png)
 
 ## **Explanation of Each Block**
