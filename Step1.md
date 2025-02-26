@@ -1,6 +1,6 @@
 # **Step 1: Understanding the Verilog Code**
 The Verilog code can be accessed [here](https://github.com/Skandakm29/VsdSquadron_mini_fpga_uart_loopback).  
-It is designed for an **FPGA (Field Programmable Gate Array)** and implements a **UART transmitter (8N1 format)** along with **RGB LED control** using an **internal oscillator and counter**.
+It is designed for an **FPGA (Field Programmable Gate Array)** and implements a **UART Loopback (8N1 format)** along with **RGB LED control** using an **internal oscillator and counter**.
 
 This module enables **serial communication via UART** and **controls RGB LEDs based on UART signals**.
 
@@ -118,40 +118,27 @@ always @(posedge clk) begin
     end
 end
 ```
+
 ---
-## UART TX 8N1 Explanation
 
-### IDLE STATE (`STATE_IDLE`)
-- If `senddata = 1` and the state is `STATE_IDLE`, it:
-  - Moves to the **`STATE_STARTTX`** state.
-  - Loads `txbyte` (**8-bit data to transmit**) into `buf_tx`.
-  - Clears `txdone` (**indicates transmission is ongoing**).
+### **What This Does**
+- **`STATE_IDLE`** → Waits for `senddata`.  
+- **`STATE_STARTTX`** → Sends start bit (`0`).  
+- **`STATE_TXING`** → Sends 8-bit data (`LSB first`).  
+- **`STATE_TXDONE`** → Sends stop bit (`1`), marks completion.  
 
-- Otherwise, if still in `STATE_IDLE`, it:
-  - Keeps `txbit` **high (`1`)** because **UART idles at high**.
-  - Ensures `txdone` remains **low (`0`)**.
+---
 
-### Start Bit Transmission (`STATE_STARTTX`)
-- Once in **`STATE_STARTTX`**, it:
-  - Sets `txbit` **low (`0`)** (**start bit** in UART communication).
-  - Moves to **`STATE_TXING`** to transmit data bits.
+### **UART Loopback Implementation**
+#### **How It Works**
+- Instead of using a **separate UART receiver (`uart_rx_8n1`)**, the design **directly loops back the received signal (`uartrx`) to `uarttx`**.
+- This acts as a **wire-based echo loopback**, useful for **testing UART communication**.
 
-### Sending Data Bits (`STATE_TXING`)
-- If `state == STATE_TXING` and `bits_sent < 8`, it:
-  - Sends the **Least Significant Bit (LSB) of `buf_tx`**.
-  - Shifts `buf_tx` right (`>> 1`).
-  - Increments `bits_sent`.
+#### **Loopback Code in Verilog**
+```verilog
+assign uarttx = uartrx;
+```
 
-###  Stop Bit Transmission (`STATE_TXDONE`)
-- After **8 data bits** are transmitted, it:
-  - Sends the **stop bit (`1`)**.
-  - Resets `bits_sent` to `0`.
-  - Moves to **`STATE_TXDONE`**.
-
-###  Transmission Complete (`STATE_TXDONE → STATE_IDLE`)
-- In **`STATE_TXDONE`**, it:
-  - Sets `txdone = 1` (**indicates transmission complete**).
-  - Returns to **`STATE_IDLE`**.
 
 
 ## **RGB LED Driver (`SB_RGBA_DRV`)**
