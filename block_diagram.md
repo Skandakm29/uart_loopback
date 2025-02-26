@@ -1,34 +1,46 @@
-# **UART TX Block Diagram**
+# **UART Loopback Block Diagram**
+
+## **1. What is UART?**
+**UART (Universal Asynchronous Receiver-Transmitter)** is a serial communication protocol used for **asynchronous data transfer** between devices. It does not require a separate clock signal; instead, it uses a **baud rate** to synchronize communication.
+
+## **2. What is UART Loopback Mode?**
+**UART loopback** is a special mode where the **transmitted (`TX`) data is directly routed to the receiver (`RX`)**, allowing self-testing without external connections.
+
+### **Why Use Loopback Mode?**
+ **Debugging UART Transmission** → Ensures data is sent and received correctly.  
+ **No External Hardware Required** → TX is internally connected to RX.  
+ **Self-Testing** → Helps verify UART functionality in an FPGA or microcontroller.
 
 ## **Overview**
-The **UART Transmitter (uart_tx_8n1)** follows a structured architecture to convert **parallel data (8-bit)** into a **serial UART format**. The block diagram below represents the key functional blocks of this module.
-## UART TX Block Diagram
+The diagram below illustrates the **UART Loopback mechanism**, where the **UART Transmitter (TX)** is directly connected to the **UART Receiver (RX)** through a **Direct Connection**.
 
-![UART TX Block Diagram](https://github.com/Skandakm29/VsdSquadron_mini_fpga_uart_loopback/blob/main/Brown%20Pastel%20Flowchart%20Diagram%20Graph%20Template%20(1).png)
+## **Block Diagram**
+![UART Loopback](https://github.com/Skandakm29/VsdSquadron_mini_fpga_uart_loopback/blob/main/uartloopback.png)
 
-## **Description of Each Block**
+## **Explanation of Each Block**
 
-### **FSM Controller (State Machine)**
-- Controls the **state transitions** for UART transmission.
-- Moves through states: **IDLE → STARTTX → TXING → TXDONE → IDLE**.
-- Ensures **correct bit timing and sequence**.
+### **1. UART Transmitter**
+- This block is responsible for **sending serial data**.
+- It converts **parallel 8-bit data** into a **serial bitstream**.
+- Generates **Start Bit (`0`), Data Bits (LSB First), and Stop Bit (`1`)**.
 
-### **Shift Register (Data Buffer)**
-- **Stores `txbyte` before transmission**.
-- **Shifts out bits one-by-one**, sending **LSB first**.
-- Updates `txbit` for UART transmission.
+### **2. Direct Connection (Loopback)**
+- Instead of sending data to an external device, **TX (`uarttx`) is directly connected to RX (`uartrx`)**.
+- Implements a **hardware loopback**, allowing data sent from TX to be immediately received by RX.
 
-### **Bit Counter**
-- **Tracks how many bits have been transmitted (`bits_sent`)**.
-- Ensures exactly **8 data bits are transmitted** before moving to stop bit.
+### **3. UART Receiver**
+- Reads the **serial data from TX** via the direct connection.
+- Reconstructs the original **8-bit parallel data**.
+- This allows **testing UART transmission without an external receiver**.
 
-### **TX Output Logic**
-- **Drives `txbit`** to generate a **serial UART signal**.
-- Sends **Start Bit (`0`), 8 Data Bits (LSB First), Stop Bit (`1`)**.
-- Connects directly to the **UART TX pin (`tx`)**.
+---
 
-## **Data Flow Explanation**
-1. The **FSM Controller** starts transmission when `senddata = 1`.
-2. The **Shift Register** loads `txbyte` and begins shifting bits.
-3. The **Bit Counter** keeps track of bits sent, ensuring **8 bits are transmitted**.
-4. The **TX Output Logic** sends **start bit → data bits → stop bit** in **serial format**.
+## **Loopback Implementation in Verilog**
+### **Direct Connection Logic**
+```verilog
+assign uarttx = uartrx;
+```
+
+- Any data sent on uarttx is instantly received on uartrx.
+ - This eliminates the need for external connections during testing.
+ - Helps debug UART transmission in an FPGA-based system.
