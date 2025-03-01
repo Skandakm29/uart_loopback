@@ -3,7 +3,7 @@
 ## Clone & Setup Repository
 ```bash
 git clone https://github.com/Skandakm29/VsdSquadron_mini_fpga_uart_loopback.git
-cd VsdSquadron_mini_fpga_uart_loopback
+cd "VsdSquadron_mini_fpga_uart_loopback"
 ```
 Build & Flash FPGA Bitstream
 ###  Build the Bitstream
