@@ -1,6 +1,6 @@
 # VsdSquadron_mini_fpga_uart_loopback
 ## Uart loop back 
-### **1.Understanding the Verilog Code**
+### **Understanding the Verilog Code**
 The Verilog code can be accessed [here](https://github.com/Skandakm29/VsdSquadron_mini_fpga_uart_loopback).  
 It is designed for an **FPGA (Field Programmable Gate Array)** and implements a **UART Loopback (8N1 format)** along with **RGB LED control** using an **internal oscillator and counter**.
 
@@ -183,7 +183,7 @@ This module **implements a UART transmitter** and **RGB LED controller** using:
 - **Changes LED color based on UART activity**.
 
 ---
-# **2.UART Loopback Block Diagram**
+# **UART Loopback Block Diagram**
 
 ## **What is UART?**
 **UART (Universal Asynchronous Receiver-Transmitter)** is a serial communication protocol used for **asynchronous data transfer** between devices. It does not require a separate clock signal; instead, it uses a **baud rate** to synchronize communication.
@@ -227,7 +227,7 @@ assign uarttx = uartrx;
  - This eliminates the need for external connections during testing.
  - Helps debug UART transmission in an FPGA-based system.
 
-# **3.UART Loopback Circuit Diagram**
+# **UART Loopback Circuit Diagram**
 ![Circuit Diagram](https://github.com/Skandakm29/VsdSquadron_mini_fpga_uart_loopback/blob/main/circuit_diagram.png)
 
 ## **🔹 Key Components**
@@ -297,5 +297,5 @@ CTRL + A, then CTRL + X
 
 
 
-## 5.Demo video
+## Demo video
 [Demo Video](https://github.com/user-attachments/assets/60dddb70-100b-40ed-82e3-6ac9a7fb49c8)
